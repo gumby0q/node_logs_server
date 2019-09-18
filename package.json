@@ -1,0 +1,9 @@
+{
+  "main": "server/app.js",
+  "scripts": {
+    "up": "node server/app.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
