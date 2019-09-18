@@ -34,7 +34,7 @@ function getDateTime() {
     return year + ":" + month + ":" + day + ":" + hour + ":" + min + ":" + sec;
 }
 
-const log_file = fs.createWriteStream(__dirname + `/logs/debug_${getDateTime()}.log`, {flags : 'w'});
+const log_file = fs.createWriteStream(__dirname + `/logs/debug_${getDateTime()}.txt`, {flags : 'w'});
 
 
 // app.get('/', function (req, res) {
