@@ -2,42 +2,46 @@ const express = require('express')
 const app = express()
 const fs = require('fs');
 const util = require('util');
+const serveIndex = require('serve-index')
 
-app.use(express.json());
+const PORT = 3000;
 
-
-function file_log (d) { //
-  log_file.write(util.format(d) + '\n');
+function fileLog (d) {
+  logFile.write(util.format(d) + '\n');
 };
 
 function getDateTime() {
 
-    var date = new Date();
+    let date = new Date();
 
-    var hour = date.getHours();
+    let hour = date.getHours();
     hour = (hour < 10 ? "0" : "") + hour;
 
-    var min  = date.getMinutes();
+    let min  = date.getMinutes();
     min = (min < 10 ? "0" : "") + min;
 
-    var sec  = date.getSeconds();
+    let sec  = date.getSeconds();
     sec = (sec < 10 ? "0" : "") + sec;
 
-    var year = date.getFullYear();
+    let year = date.getFullYear();
 
-    var month = date.getMonth() + 1;
+    let month = date.getMonth() + 1;
     month = (month < 10 ? "0" : "") + month;
 
-    var day  = date.getDate();
+    let day  = date.getDate();
     day = (day < 10 ? "0" : "") + day;
 
     return year + ":" + month + ":" + day + ":" + hour + ":" + min + ":" + sec;
 }
 
-const log_file = fs.createWriteStream(__dirname + `/logs/debug_${getDateTime()}.txt`, {flags : 'w'});
 
 
-// app.get('/', function (req, res) {
+const logFile = fs.createWriteStream(__dirname + `/logs/debug_${getDateTime()}.txt`, {flags : 'w'});
+const sharedPath = __dirname + '/logs';
+
+app.use(express.json());
+
+// app.get('/logs', function (req, res) {
 //     console.log('input req', req);
 //     res.send('Hello World')
 // })
@@ -61,6 +65,7 @@ app.post('/', function (req, res) {
     res.send(responce);
 })
 
+app.use('/logs', express.static(sharedPath), serveIndex(sharedPath, {'icons': true, 'view': 'details'}));
 
 app.post('/debug-log/', function (req, res) {
     // console.log('input req post headers', req.headers);
@@ -72,7 +77,7 @@ app.post('/debug-log/', function (req, res) {
     };
     const jsonLogData = JSON.stringify(logData);
 
-    file_log(jsonLogData + ',');
+    fileLog(jsonLogData + ',');
 
 
     const responceObject = {
@@ -83,4 +88,5 @@ app.post('/debug-log/', function (req, res) {
     res.send(responce);
 })
 
-app.listen(3000);
+app.listen(PORT);
+console.log('server listening on port', PORT);
